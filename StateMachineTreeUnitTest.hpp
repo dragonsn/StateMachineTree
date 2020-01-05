@@ -85,7 +85,8 @@ public:
 	int timer;
 	int frame = 0;
 };
-void unit_test_SMT()
+
+void UnitTestSMT()
 {
 	AITest  ai;
 	for (int i = 0; i < 100; i++)
