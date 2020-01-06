@@ -59,7 +59,7 @@ public:
 
 			BGN_STATE(Working)
 			{
-				report("keep one doing task2");
+				report("keep on doing task2");
 				if (frame > 90)
 				{
 					GotoState(3, 0);
@@ -75,12 +75,7 @@ public:
 	}
 	void report(const char * tex)
 	{
-		std::cout<<"FRAME:" << frame << " " << tex<< std::endl;
-		for (int i = 0; i < CurrentLevel; i++)
-		{
-			std::cout << this->DebugStateStack[i] << " <<<===";
-		}
-		std::cout << std::endl;
+		std::cout<< tex<< std::endl;
 	}
 	int timer;
 	int frame = 0;
@@ -91,7 +86,14 @@ void UnitTestSMT()
 	AITest  ai;
 	for (int i = 0; i < 100; i++)
 	{
+		
+		std::cout << std::endl << "FRAME : " << i << std::endl;
 		ai.Tick();
+		for (int i = 0; i <= ai.LastDebugStackDepth; i++)
+		{
+			std::cout << ai.DebugStateStack[i] << " <<<===";
+		}
+		std::cout << std::endl;
 	}
 }
 

@@ -12,7 +12,7 @@ namespace SNL
 	/*configurable max depth of the state machine tree*/
 	const static int MaxStateStackDepth = 64;
 
-	/*a hiearchical state machine tree implementation,support fake coroutine */
+	/*a hierarchical state machine tree implementation,support fake coroutine */
 	class StateMachineTree
 	{
 	public:
@@ -115,60 +115,62 @@ namespace SNL
 			CurrentLevel = LastDebugStackDepth = 0;
 		}
 
-	protected:
-		void Nop() {};
+	public:
 		int CurrentLevel;
 		int MaxStackDepth;
 		StateDataType StateStack[MaxStateStackDepth];
 		const char *  DebugStateStack[MaxStateStackDepth];
 		int LastDebugStackDepth;
 	};
-
-
-	
 }
 
 #define SMT_REMINDER_STR(x) #x
 
 #define SMT_MACRO_TO_STRING(x) SMT_REMINDER_STR(x)
 
-#define	BGN_SMT 			SetStackDepth(0);     \
-							{switch (CurrentLevelState()) { case 0:                
+#define	BGN_SMT \
+	SetStackDepth(0); \
+	{ \
+		switch (CurrentLevelState()) \
+		{ \
+				case 0:
 
-#define END_SMT   			}}
+#define END_SMT	\
+		} \
+	}
 
+#define BGN_STATE(state) \
+	}\
+	case state: \
+	{ \
+		ConfirmState( state); \
+		DebugState( SMT_MACRO_TO_STRING(state) ); \
+		{ \
+			ScopedStateStackPointer pt(this); \
+			switch (CurrentLevelState())  \
+			{ \
+				case 0: 
 
-#define BGN_STATE(state)	}case state:   \
-							{			  \
-							ConfirmState( state);  \
-							DebugState( SMT_MACRO_TO_STRING(state) );  \
-							{ScopedStateStackPointer pt(this);   \
-							switch (CurrentLevelState())  { case 0: 
-
-
-#define END_STATE			}	break;}}{
+#define END_STATE \
+			} \
+			break; \
+		} \
+	} \
+    {
 							
 
-#define SMT_POINT(state, condition)  }case state:  \
-									{\
-										ConfirmState(state);\
-										DebugState( #state );  \
-										if (condition) break; 
+#define SMT_POINT(state, condition) \
+	} \
+	case state: \
+	{ \
+		ConfirmState(state); \
+		DebugState( #state ); \
+		if (condition) break; 
 							
-#define SMT_POINT2(state, condition)   SMT_POINT(state, condition)
+#define SMT_POINT2(state, condition) SMT_POINT(state, condition)
 
-#define SMT_CHECK_POINT			SMT_POINT2(__LINE__,false)
+#define SMT_CHECK_POINT SMT_POINT2(__LINE__,false)
 
 #define	SMT_PAUSE_IF(condition) SMT_POINT2(__LINE__,condition) 
 
-#define BGN_NEW_STATE	BGN_STATE(__LINE__)   
-
-
-
-
-
-
-
-
-
-
+#define BGN_NEW_STATE BGN_STATE(__LINE__)   
